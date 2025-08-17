@@ -1,0 +1,21 @@
+<script setup lang="ts">
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
+</script>
+
+<template>
+  <div>
+    <Header />
+    <router-view />
+    <Footer />
+  </div>
+</template>
+
+<style scoped>
+/*header {
+  line-height: 1.5;
+  max-height: 100vh;
+}*/
+
+
+</style>
