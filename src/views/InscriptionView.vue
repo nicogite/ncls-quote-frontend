@@ -3,34 +3,25 @@
     <main>
       <h2>Inscrivez vous</h2>
       <form @submit.prevent="handleSubmit">
+        <v-text-field label="Email" v-model="email" variant="outlined"></v-text-field>
+        <v-text-field label="Téléphone" v-model="phone" variant="outlined"></v-text-field>
+
         <div>
-          <label for="email">Email</label>
-          <input id="email" v-model="email" type="email" required />
+          <p>A quelle fréquence souhaitez-vous recevoir vos citations du jour :</p>
+          <v-radio-group v-model="frequency">
+            <v-radio label="Chaque jour" value="daily"></v-radio>
+            <v-radio label="Chaque semaine" value="weekly"></v-radio>
+            <v-radio label="Chaque mois" value="monthly"></v-radio>
+          </v-radio-group>
         </div>
         <div>
-          <label for="phone">Phone</label>
-          <input id="phone" v-model="phone" type="tel" />
-        </div>
-        <div>
-          <p>A quelle fréquence souhaitez vous recevoir vos citations du jour</p>
-          <label>
-            <input type="radio" value="daily" v-model="frequency" required />
-            Chaque jour
-          </label>
-          <label>
-            <input type="radio" value="weekly" v-model="frequency" />
-            Chaque semaine
-          </label>
-          <label>
-            <input type="radio" value="monthly" v-model="frequency" />
-            Chaque mois
-          </label>
-        </div>
-        <div>
-          <label>
-            <input type="checkbox" v-model="cgu_approved" required />
-            J'accepte les Conditions Générales d'Utilisation
-          </label>
+          <v-checkbox v-model="cgu_approved" required>
+            <template v-slot:label>
+              <div>
+                J'accepte les <router-link to="/cgu">Conditions générales d'utilisation</router-link>
+              </div>
+            </template>
+          </v-checkbox>
         </div>
         <button type="submit">Je m'inscris</button>
       </form>

@@ -62,6 +62,8 @@ quote {
   font-size: 1.5rem;
   margin: 2rem 0;
   text-align: center;
+  font-style: italic;
+  font-family: var(--citation-italic-font);
 }
 .star {
   cursor: pointer;

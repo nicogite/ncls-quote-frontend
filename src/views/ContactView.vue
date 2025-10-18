@@ -1,15 +1,19 @@
 <template>
   <div>
+    <h2>Ecrivez nous !</h2>
+    
     <main>
       <form @submit.prevent="handleSubmit">
-        <div>
+        <v-text-field label="Votre email" v-model="email" variant="outlined"></v-text-field>
+        <v-textarea label="Votre message" v-model="message" variant="outlined"></v-textarea>
+        <!--div>
           <label for="email">Email</label>
-          <input id="email" v-model="email" type="email" required />
+          <input id="email" v-model="email" type="email" />
         </div>
         <div>
           <label for="message">Votre message</label>
-          <textarea id="message" v-model="message" required></textarea>
-        </div>
+          <textarea id="message" v-model="message"></textarea>
+        </div-->
         <button type="submit">Envoyer</button>
       </form>
       <div v-if="info" class="info">{{ info }}</div>
@@ -64,5 +68,9 @@ button {
   margin-top: 1rem;
   text-align: center;
   color: green;
+}
+
+textarea {
+  height: 175px;
 }
 </style>

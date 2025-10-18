@@ -1,5 +1,5 @@
 <template>
-  <div class="header-container">
+  <div id="header-container">
     <header>
       <h1 @click="goHome">Citation du jour</h1>
     </header>
@@ -20,13 +20,13 @@ function goHome() {
 </script>
 
 <style scoped>
-.header-container {
+#header-container {
+  padding: 1rem;
 }
 header {
   text-align: center;
   margin-bottom: 2rem;
-  align-self: center;
-  justify-self: center;
+  height: 10vh;
 }
 h1 {
   cursor: pointer;

@@ -1,5 +1,18 @@
 @import './base.css';
 
+body {
+  background-image: -webkit-gradient(linear,center top,center bottom,color-stop(0,#FFFFFF),color-stop(1,#D2C1B6));
+  background-image: -webkit-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
+  background-image: -moz-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
+  background-image: -ms-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
+  background-image: -o-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
+  background-image: linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
+}
+
+html, body, #app {
+  font-family: var(--app-font);
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -7,10 +20,14 @@
   font-weight: normal;
 }
 
+h2 {
+  margin-bottom: 2rem;
+}
+
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--the-quote-light-blue);
   transition: 0.4s;
   padding: 3px;
 }
@@ -23,13 +40,72 @@ a,
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
+    
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+}
+
+@font-face {
+  font-family: 'MyFontItalic';
+  src: url('/src/assets/fonts/inter/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyFont';
+  src: url('/src/assets/fonts/inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CitationItalicFont';
+  src: url('/src/assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'CitationFont';
+  src: url('/src/assets/fonts/PlayfairDisplay-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --the-quote-focus-color: var(--the-quote-medium-blue); /* remplace par ta couleur (ou utilise --the-quote-medium-blue) */
+  --app-font: 'MyFont', system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans";
+  --citation-font: 'CitationFont', serif;
+  --citation-italic-font: 'CitationItalicFont', serif;
+}
+
+
+
+/* outline (SVG stroke) des champs outlined au focus */
+.v-field.v-field--outlined.v-field--focused .v-field__outline {
+  stroke: var(--the-quote-focus-color) !important;
+}
+
+/* couleur du label au focus */
+.v-field.v-field--focused .v-field__label {
+  color: var(--the-quote-focus-color) !important;
+}
+
+/* caret / sélection pour inputs & textarea */
+.v-field.v-field--focused input,
+.v-field.v-field--focused textarea {
+  caret-color: var(--the-quote-focus-color);
+  border: 5px;
+}
+
+/* si tu utilises les variantes VTextField / VTextarea (Vuetify defaults), assurer compatibilité */
+.v-text-field.v-field--outlined.v-field--focused .v-field__outline,
+.v-textarea.v-field--outlined.v-field--focused .v-field__outline {
+  stroke: var(--the-quote-focus-color) !important;
 }
