@@ -73,7 +73,7 @@ function handleClick() {
     animation-fill-mode: forwards;
     animation-timing-function: ease;
     /* each item waits N * 1s before starting */
-    animation-delay: calc(var(--stagger-index, 0) * 3s);
+    animation-delay: calc(var(--stagger-index, 0) * 2s);
   }
 
   @keyframes fadeInUp {
