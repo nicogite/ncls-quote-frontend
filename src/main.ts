@@ -1,44 +1,35 @@
 import './assets/main.css'
-
+import axios from 'axios'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
-
 import App from './App.vue'
 import router from './router'
+
+// set axios base URL from Vite env (exposed via import.meta.env)
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL ?? '/'
 
 const vuetify = createVuetify({
   components,
   directives,
   icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: { mdi }
-    },
+    defaultSet: 'mdi',
+    aliases,
+    sets: { mdi },
+  },
   defaults: {
-    VTextField: {
-      variant: 'outlined',
-    },
-    VTextarea: {
-      variant: 'outlined',
-      autoGrow: true,
-      color: 'var(--the-quote-medium-blue)'
-    },
-    VRadio: {
-      color: 'var(--the-quote-medium-blue)',
-    },
+    VTextField: { variant: 'outlined' },
+    VTextarea: { variant: 'outlined', autoGrow: true, color: 'var(--the-quote-medium-blue)' },
+    VRadio: { color: 'var(--the-quote-medium-blue)' },
   },
 })
 
 const app = createApp(App)
-
 app.use(vuetify)
 app.use(createPinia())
 app.use(router)
-
 app.mount('#app')
