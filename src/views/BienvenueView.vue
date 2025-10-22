@@ -2,18 +2,20 @@
   <div>
     <main>
       <p class="stagger-item" style="--stagger-index:0">Parfois, une phrase nous traverse comme une étoile filante.</p>
+      <br/>
       <p class="stagger-item" style="--stagger-index:1">Elle tombe juste, éclaire une question, ouvre un souffle.</p>
       <br/>
       <p class="stagger-item" style="--stagger-index:2">Ici, les mots ne viennent pas par hasard.
       Ils vous sont soufflés par le temps, la lumière et le lieu où vous vous trouvez.</p>
       <br/>
-      <p class="stagger-item" style="--stagger-index:3">À chaque instant, le monde murmure quelque chose de différent.<br/>
-      Selon l’heure du jour, selon votre ciel, une parole se révèle — poétique, ancienne ou nouvelle — pour accompagner votre pas du moment.</p>
-      <br>
-      <br>
-      <p class="stagger-item" style="--stagger-index:4">Prenez une respiration.
+      <p class="stagger-item" style="--stagger-index:3">À chaque instant, le monde murmure quelque chose de différent.</p>
+      <br/>
+      <p class="stagger-item" style="--stagger-index:4">Selon l’heure du jour, selon votre ciel, une parole se révèle — poétique, ancienne ou nouvelle — pour accompagner votre pas du moment.</p>
+      <br/>
+      <br/>
+      <p class="stagger-item" style="--stagger-index:5">Prenez une respiration.
       <br>Laissez la citation apparaître.</p>
-      <v-btn id="quote-button-cstm" variant="text" @click="handleClick" class="stagger-item" style="--stagger-index:5">
+      <v-btn id="quote-button-cstm" variant="text" @click="handleClick" class="stagger-item" style="--stagger-index:6">
         - Découvrez votre citation -
       </v-btn>
       <!--button id="quote-button" active-color="var(--the-quote-light-blue)" @click="handleClick">Voir la citation du jour</button-->
