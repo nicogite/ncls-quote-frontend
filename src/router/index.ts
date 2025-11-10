@@ -6,9 +6,11 @@ import Inscription from '@/views/InscriptionView.vue'
 import Concept from '@/views/ConceptView.vue'
 import Contact from '@/views/ContactView.vue'
 import CGU from '@/views/CguView.vue'
-import BackofficeLayout from '@/views/admin/AdminLayout.vue'
-import LoginView from '@/views/admin/LoginView.vue'
-import DashboardView from '@/views/admin/DashboardView.vue'
+import BackofficeLayout from '@/views/backoffice/BackofficeLayout.vue'
+import LoginView from '@/views/backoffice/LoginView.vue'
+import DashboardView from '@/views/backoffice/DashboardView.vue'
+import QuotesView from '@/views/backoffice/QuotesView.vue'
+import ContentView from '@/views/backoffice/ContentView.vue'
 import { useAuthStore } from '@/store/auth'
 
 const router = createRouter({
@@ -28,7 +30,8 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         { path: '', name: 'AdminDashboard', component: DashboardView },
-        // { path: 'users', component: UsersView },
+        { path: 'quotes', name: 'AdminQuotes', component: QuotesView },
+        { path: 'content', name: 'AdminContent', component: ContentView },
       ],
     },
     { path: '/admin/login', name: 'AdminLogin', component: LoginView, meta: { guest: true } },
