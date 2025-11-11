@@ -36,7 +36,8 @@ async function loadWelcomeContent() {
   loading.value = true
   error.value = ''
   try {
-    const response = await axios.get('/api/admin/content/welcome')
+    // Utiliser la route PUBLIQUE (pas /admin/content)
+    const response = await axios.get('/api/content/welcome')
     welcomeContent.value = response.data.value
   } catch (err) {
     console.error('Error loading welcome content:', err)

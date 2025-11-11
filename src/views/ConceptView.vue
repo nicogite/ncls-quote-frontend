@@ -27,7 +27,8 @@ async function loadConceptContent() {
   loading.value = true
   error.value = ''
   try {
-    const response = await axios.get('/api/admin/content/concept')
+    // Utiliser la route PUBLIQUE (pas /admin/content)
+    const response = await axios.get('/api/content/concept')
     conceptContent.value = response.data.value
   } catch (err) {
     console.error('Error loading concept content:', err)

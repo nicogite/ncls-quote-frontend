@@ -27,7 +27,8 @@ async function loadCguContent() {
   loading.value = true
   error.value = ''
   try {
-    const response = await axios.get('/api/admin/content/cgu')
+    // Utiliser la route PUBLIQUE (pas /admin/content)
+    const response = await axios.get('/api/content/cgu')
     cguContent.value = response.data.value
   } catch (err) {
     console.error('Error loading CGU content:', err)
