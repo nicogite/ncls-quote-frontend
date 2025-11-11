@@ -1,32 +1,50 @@
 <template>
   <div>
     <main>
-      <p class="stagger-item" style="--stagger-index:0">Parfois, une phrase nous traverse comme une étoile filante.</p>
-      <br/>
-      <p class="stagger-item" style="--stagger-index:1">Elle tombe juste, éclaire une question, ouvre un souffle.</p>
-      <br/>
-      <p class="stagger-item" style="--stagger-index:2">Ici, les mots ne viennent pas par hasard.
-      Ils vous sont soufflés par le temps, la lumière et le lieu où vous vous trouvez.</p>
-      <br/>
-      <p class="stagger-item" style="--stagger-index:3">À chaque instant, le monde murmure quelque chose de différent.</p>
-      <br/>
-      <p class="stagger-item" style="--stagger-index:4">Selon l’heure du jour, selon votre ciel, une parole se révèle — poétique, ancienne ou nouvelle — pour accompagner votre pas du moment.</p>
-      <br/>
-      <br/>
-      <p class="stagger-item" style="--stagger-index:5">Prenez une respiration.
-      <br>Laissez la citation apparaître.</p>
+      <!-- Contenu chargé depuis la base de données -->
+      <div v-if="welcomeContent" class="welcome-content">
+        <div v-html="welcomeContent" class="stagger-wrapper" />
+      </div>
+      <!-- État de chargement -->
+      <div v-else-if="loading" class="text-center">
+        <v-progress-circular indeterminate />
+      </div>
+      <!-- Erreur -->
+      <div v-else-if="error" class="text-error">
+        {{ error }}
+      </div>
+
+      <!-- Bouton toujours visible -->
       <v-btn id="quote-button-cstm" variant="text" @click="handleClick" class="stagger-item" style="--stagger-index:6">
         - Découvrez votre citation -
       </v-btn>
-      <!--button id="quote-button" active-color="var(--the-quote-light-blue)" @click="handleClick">Voir la citation du jour</button-->
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const welcomeContent = ref('')
+const loading = ref(false)
+const error = ref('')
+
+async function loadWelcomeContent() {
+  loading.value = true
+  error.value = ''
+  try {
+    const response = await axios.get('/api/admin/content/welcome')
+    welcomeContent.value = response.data.value
+  } catch (err) {
+    console.error('Error loading welcome content:', err)
+    error.value = 'Impossible de charger le contenu de bienvenue'
+  } finally {
+    loading.value = false
+  }
+}
 
 function handleClick() {
   if (document.cookie.includes('quote_of_the_day=true')) {
@@ -36,54 +54,74 @@ function handleClick() {
     router.push('/votre-citation')
   }
 }
+
+onMounted(() => {
+  loadWelcomeContent()
+})
 </script>
 
 <style scoped>
+main {
+  line-height: 2.2rem;
+}
 
-  main {
-    line-height: 2.2rem;
-  }
-  #quote-button {
-    margin-top: 2rem;
-    margin-left:auto;
-    margin-right:auto;
-    display: block;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    background-color: var(--the-quote-light-blue);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+.welcome-content {
+  margin-bottom: 2rem;
+}
 
-  #quote-button-cstm {
-    margin:4rem auto 0 auto;
-    display: block;
-    font-size: 1.5rem;
-    font-family: var(--citation-font);
-  }
+.stagger-wrapper :deep(p) {
+  opacity: 0;
+  transform: translateY(10px);
+  animation-name: fadeInUp;
+  animation-duration: 1000ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease;
+  animation-delay: calc(var(--stagger-index, 0) * 2s);
+  margin-bottom: 1rem;
+}
 
-  .stagger-item {
+.stagger-wrapper :deep(br) {
+  display: none;
+}
+
+#quote-button-cstm {
+  margin: 4rem auto 0 auto;
+  display: block;
+  font-size: 1.5rem;
+  font-family: var(--citation-font);
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation-name: fadeInUp;
+  animation-duration: 1000ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease;
+  animation-delay: calc(var(--stagger-index, 0) * 2s);
+}
+
+@keyframes fadeInUp {
+  from {
     opacity: 0;
     transform: translateY(10px);
-    animation-name: fadeInUp;
-    animation-duration: 1000ms;
-    animation-fill-mode: forwards;
-    animation-timing-function: ease;
-    /* each item waits N * 1s before starting */
-    animation-delay: calc(var(--stagger-index, 0) * 2s);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+.text-error {
+  color: #d32f2f;
+  padding: 1rem;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+}
+
+.text-center {
+  text-align: center;
+  padding: 2rem;
+}
 </style>

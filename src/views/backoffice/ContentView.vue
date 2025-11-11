@@ -14,9 +14,10 @@
 
       <v-col cols="12" md="6">
         <v-card elevation="2">
-          <v-card-title>CGU</v-card-title>
+          <v-card-title>Bienvenue</v-card-title>
           <v-card-text>
-            <div ref="cguEditor" class="quill-editor" />
+            <div ref="welcomeEditor" class="quill-editor" />
+            
           </v-card-text>
         </v-card>
       </v-col>
@@ -25,9 +26,9 @@
     <v-row class="mt-4">
       <v-col cols="12">
         <v-card elevation="2">
-          <v-card-title>À propos</v-card-title>
+          <v-card-title>CGU</v-card-title>
           <v-card-text>
-            <div ref="aboutEditor" class="quill-editor" />
+            <div ref="cguEditor" class="quill-editor" />
           </v-card-text>
         </v-card>
       </v-col>
@@ -71,14 +72,14 @@ interface ContentItem {
 
 const conceptEditor = ref<HTMLDivElement>()
 const cguEditor = ref<HTMLDivElement>()
-const aboutEditor = ref<HTMLDivElement>()
+const welcomeEditor = ref<HTMLDivElement>()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillConcept: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillCgu: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let quillAbout: any
+let quillWelcome: any
 
 const snackbar = ref({
   show: false,
@@ -89,34 +90,47 @@ const snackbar = ref({
 const contentData = ref({
   concept: '',
   cgu: '',
-  about: '',
+  welcome: '',
 })
 
 const originalData = ref({
   concept: '',
   cgu: '',
-  about: '',
+  welcome: '',
 })
 
 async function loadContent() {
   try {
     const response = await axios.get('/api/admin/content')
     const items: ContentItem[] = response.data
+    console.log('Loaded content items:', items)
 
     items.forEach((item: ContentItem) => {
+      console.log(`Loading ${item.key}:`, item.value)
       if (item.key === 'concept') {
         contentData.value.concept = item.value
-        quillConcept?.setContents(quillConcept.clipboard.convert(item.value))
+        if (quillConcept) {
+          // Vider puis charger
+          quillConcept.setContents([])
+          quillConcept.clipboard.dangerouslyPasteHTML(item.value)
+        }
       } else if (item.key === 'cgu') {
         contentData.value.cgu = item.value
-        quillCgu?.setContents(quillCgu.clipboard.convert(item.value))
-      } else if (item.key === 'about') {
-        contentData.value.about = item.value
-        quillAbout?.setContents(quillAbout.clipboard.convert(item.value))
+        if (quillCgu) {
+          quillCgu.setContents([])
+          quillCgu.clipboard.dangerouslyPasteHTML(item.value)
+        }
+      } else if (item.key === 'welcome') {
+        contentData.value.welcome = item.value
+        if (quillWelcome) {
+          quillWelcome.setContents([])
+          quillWelcome.clipboard.dangerouslyPasteHTML(item.value)
+        }
       }
     })
 
     originalData.value = { ...contentData.value }
+    console.log('Content loaded successfully')
   } catch (err) {
     console.error('Error loading content:', err)
     showSnackbar('Erreur lors du chargement du contenu', 'error')
@@ -125,8 +139,8 @@ async function loadContent() {
 
 async function saveContent() {
   try {
-    const keys: Array<'concept' | 'cgu' | 'about'> = ['concept', 'cgu', 'about']
-    const quills = { concept: quillConcept, cgu: quillCgu, about: quillAbout }
+    const keys: Array<'concept' | 'cgu' | 'welcome'> = ['concept', 'cgu', 'welcome']
+    const quills = { concept: quillConcept, cgu: quillCgu, welcome: quillWelcome }
 
     for (const key of keys) {
       const content = quills[key]?.root.innerHTML || ''
@@ -146,9 +160,18 @@ async function saveContent() {
 }
 
 function resetContent() {
-  quillConcept?.setContents(quillConcept.clipboard.convert(originalData.value.concept))
-  quillCgu?.setContents(quillCgu.clipboard.convert(originalData.value.cgu))
-  quillAbout?.setContents(quillAbout.clipboard.convert(originalData.value.about))
+  if (quillConcept) {
+    quillConcept.setContents([])
+    quillConcept.clipboard.dangerouslyPasteHTML(originalData.value.concept)
+  }
+  if (quillCgu) {
+    quillCgu.setContents([])
+    quillCgu.clipboard.dangerouslyPasteHTML(originalData.value.cgu)
+  }
+  if (quillWelcome) {
+    quillWelcome.setContents([])
+    quillWelcome.clipboard.dangerouslyPasteHTML(originalData.value.welcome)
+  }
   showSnackbar('Contenu réinitialisé', 'info')
 }
 
@@ -192,8 +215,8 @@ onMounted(() => {
     })
   }
 
-  if (aboutEditor.value) {
-    quillAbout = new Quill(aboutEditor.value, {
+  if (welcomeEditor.value) {
+    quillWelcome = new Quill(welcomeEditor.value, {
       theme: 'snow',
       modules: {
         toolbar: [
@@ -209,7 +232,10 @@ onMounted(() => {
     })
   }
 
-  loadContent()
+  // Charger le contenu après que les éditeurs soient prêts
+  setTimeout(() => {
+    loadContent()
+  }, 100)
 })
 </script>
 

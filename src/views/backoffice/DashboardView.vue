@@ -5,12 +5,10 @@
         <v-card elevation="2">
           <v-card-title class="text-h4">Bienvenue sur votre espace d'administration</v-card-title>
           <v-card-text>
-            <p class="text-subtitle1">Gérez facilement votre application Citation du jour</p>
             <v-divider class="my-4" />
-            <p>Utilisez le menu de navigation à gauche pour :</p>
             <ul>
-              <li><strong>Statistiques</strong> : Consulter les données clés de votre application</li>
-              <li><strong>Citations</strong> : Gérer votre base de citations</li>
+              <li><strong>Statistiques</strong> : Consulter les données clés de l'application</li>
+              <li><strong>Citations</strong> : Gérer la base de citations</li>
               <li><strong>Contenu</strong> : Éditer le contenu statique de l'application</li>
             </ul>
           </v-card-text>
@@ -49,15 +47,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
 const stats = ref({
   totalQuotes: 0,
   totalUsers: 0,
   topRatedQuotes: 0,
 })
+const loading = ref(false)
+const error = ref('')
 
-// TODO: Charger les vraies statistiques depuis l'API
+async function loadStats() {
+  loading.value = true
+  error.value = ''
+  try {
+    const response = await axios.get('/api/admin/quotes/stats')
+    stats.value = response.data
+    console.log('✓ Statistics loaded:', stats.value)
+  } catch (err) {
+    console.error('Error loading statistics:', err)
+    error.value = 'Impossible de charger les statistiques'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadStats()
+})
 </script>
 
 <style scoped>

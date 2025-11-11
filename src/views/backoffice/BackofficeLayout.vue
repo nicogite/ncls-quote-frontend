@@ -5,7 +5,7 @@
       <!-- Header du drawer -->
       <div class="sidebar-header">
         <h3>Admin</h3>
-        <p>Citation du jour</p>
+        <p>La citation du jour</p>
       </div>
 
       <!-- Navigation Items -->
@@ -16,7 +16,6 @@
           :to="item.path"
           class="nav-item"
           :class="{ active: activeItem === item.path }"
-          @click="activeItem = item.path"
         >
           <span class="icon">{{ getIcon(item.icon) }}</span>
           <span class="label" v-if="!rail">{{ item.title }}</span>
@@ -53,14 +52,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const rail = ref(false)
-const activeItem = ref('/admin')
+
+// Computed property pour obtenir l'item actif basé sur la route
+const activeItem = computed(() => route.path)
 
 const navItems = [
   { title: 'Statistiques', path: '/admin', icon: 'chart' },

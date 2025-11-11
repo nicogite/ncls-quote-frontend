@@ -16,12 +16,10 @@
     <v-card>
       <v-data-table
         v-model:page="page"
+        v-model:items-per-page="limit"
         :headers="headers"
         :items="quotes"
-        :items-per-page="limit"
         :loading="loading"
-        :server-items-length="total"
-        @update:page="fetchQuotes"
         disable-sort
       >
         <!-- Colonne texte -->
@@ -149,17 +147,20 @@ const headers = [
 ]
 
 async function fetchQuotes(pageNum?: number) {
-  if (pageNum) {
-    page.value = pageNum
-  }
+  console.log('fetchQuotes called with pageNum:', pageNum)
   loading.value = true
   try {
+    // Charger TOUTES les citations (pas de pagination serveur)
     const response = await axios.get('/api/admin/quotes', {
-      params: { page: page.value, limit: limit.value },
+      params: { limit: 1000 },  // Large limit pour avoir toutes les données
     })
     console.log('Fetched quotes:', response.data)
     quotes.value = response.data.data
-    total.value = response.data.total
+    total.value = parseInt(response.data.total)
+    console.log('✓ Loaded all quotes:', {
+      itemsCount: quotes.value.length,
+      total: total.value,
+    })
   } catch (err) {
     console.error('Error fetching quotes:', err)
     showSnackbar('Erreur lors du chargement des citations', 'error')
