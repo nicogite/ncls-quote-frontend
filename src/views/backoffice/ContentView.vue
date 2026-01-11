@@ -63,6 +63,10 @@ import axios from 'axios'
 
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
+import htmlEditButton from 'quill-html-edit-button'
+
+// Enregistrer le module HTML Edit
+Quill.register('modules/htmlEditButton', htmlEditButton)
 
 interface ContentItem {
   key: string
@@ -139,20 +143,43 @@ async function loadContent() {
 
 async function saveContent() {
   try {
+    console.log('saveContent called')
     const keys: Array<'concept' | 'cgu' | 'welcome'> = ['concept', 'cgu', 'welcome']
     const quills = { concept: quillConcept, cgu: quillCgu, welcome: quillWelcome }
 
+    let savedCount = 0
+    
     for (const key of keys) {
+      // Récupérer le contenu HTML de l'éditeur
       const content = quills[key]?.root.innerHTML || ''
+      console.log(`Content for ${key}:`, content.substring(0, 100) + '...')
+      console.log(`Original for ${key}:`, originalData.value[key].substring(0, 100) + '...')
+      console.log(`Are they different?`, content !== originalData.value[key])
+      
+      // Mettre à jour contentData
+      contentData.value[key] = content
+      
+      // Envoyer uniquement si le contenu a changé
       if (content !== originalData.value[key]) {
-        await axios.put(`/api/admin/content/${key}`, {
+        console.log(`Calling API for ${key}`)
+        const response = await axios.put(`/api/admin/content/${key}`, {
           value: content,
         })
+        console.log(`${key} saved successfully:`, response.status)
+        savedCount++
+      } else {
+        console.log(`No change detected for ${key}, skipping API call`)
       }
     }
 
+    // Mettre à jour les données originales après sauvegarde réussie
     originalData.value = { ...contentData.value }
-    showSnackbar('Contenu enregistré avec succès', 'success')
+    
+    if (savedCount > 0) {
+      showSnackbar(`${savedCount} contenu(s) enregistré(s) avec succès`, 'success')
+    } else {
+      showSnackbar('Aucun changement à enregistrer', 'info')
+    }
   } catch (err) {
     console.error('Error saving content:', err)
     showSnackbar('Erreur lors de l\'enregistrement', 'error')
@@ -193,8 +220,14 @@ onMounted(() => {
           ['link', 'image'],
           ['clean'],
         ],
+        htmlEditButton: {},
       },
       placeholder: 'Entrez votre contenu ici...',
+    })
+    
+    // Écouter les changements de contenu
+    quillConcept.on('text-change', () => {
+      contentData.value.concept = quillConcept.root.innerHTML
     })
   }
 
@@ -210,8 +243,14 @@ onMounted(() => {
           ['link', 'image'],
           ['clean'],
         ],
+        htmlEditButton: {},
       },
       placeholder: 'Entrez votre contenu ici...',
+    })
+    
+    // Écouter les changements de contenu
+    quillCgu.on('text-change', () => {
+      contentData.value.cgu = quillCgu.root.innerHTML
     })
   }
 
@@ -227,8 +266,14 @@ onMounted(() => {
           ['link', 'image'],
           ['clean'],
         ],
+        htmlEditButton: {},
       },
       placeholder: 'Entrez votre contenu ici...',
+    })
+    
+    // Écouter les changements de contenu
+    quillWelcome.on('text-change', () => {
+      contentData.value.welcome = quillWelcome.root.innerHTML
     })
   }
 

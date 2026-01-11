@@ -22,10 +22,24 @@
         :loading="loading"
         disable-sort
       >
+        <!-- Colonne ID -->
+        <!--template #item.id="{ item }">
+          <div style="max-width: 100px">
+            {{ item.id }}
+          </div>
+        </template-->
+
         <!-- Colonne texte -->
         <template #item.text="{ item }">
           <div class="text-truncate" style="max-width: 300px">
             {{ item.text }}
+          </div>
+        </template>
+
+        <!-- Colonne Author -->
+        <template #item.author="{ item }">
+          <div style="max-width: 100px">
+            <a :href="item.wiki_link" target="_blank">{{ item.author }}</a>
           </div>
         </template>
 
@@ -39,21 +53,32 @@
           />
         </template>
 
+        <!-- Colonne Créée -->
+        <template #item.created_at="{ item }">
+          <div>
+            {{ formatDate(item.created_at) }}
+          </div>
+        </template>
+
         <!-- Colonne actions -->
         <template #item.actions="{ item }">
           <v-btn
-            icon="mdi-pencil"
             size="small"
             variant="text"
             @click="editQuote(item)"
-          />
+            title="Éditer"
+          >
+            ✏️
+          </v-btn>
           <v-btn
-            icon="mdi-delete"
             size="small"
             variant="text"
             color="red"
             @click="deleteQuote(item.id)"
-          />
+            title="Supprimer"
+          >
+            🗑️
+          </v-btn>
         </template>
 
         <!-- État de chargement -->
@@ -113,6 +138,7 @@ interface Quote {
   author: string
   nb_views: number
   rating: number
+  wiki_link: string
   created_at: string
 }
 
@@ -138,11 +164,12 @@ const snackbar = ref({
 })
 
 const headers = [
-  { title: 'Citation', key: 'text', width: '40%' },
+  { title: '#', key: 'id', width: '10%' },
+  { title: 'Citation', key: 'text', width: '30%' },
   { title: 'Auteur', key: 'author', width: '20%' },
   { title: 'Vues', key: 'nb_views', width: '10%' },
   { title: 'Note', key: 'rating', width: '10%' },
-  { title: 'Créée', key: 'created_at', width: '15%' },
+  { title: 'Créée', key: 'created_at', width: '10%' },
   { title: 'Actions', key: 'actions', sortable: false, width: '10%' },
 ]
 
@@ -218,6 +245,14 @@ async function deleteQuote(id: number) {
 
 function showSnackbar(message: string, color: string) {
   snackbar.value = { show: true, message, color }
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+  return `${day}-${month}-${year}`
 }
 
 onMounted(() => {
