@@ -2,27 +2,47 @@
   <div class="content-view">
     <h2 class="text-h4 mb-4">Gestion du contenu statique</h2>
 
+    <!-- 1ère ligne : Bienvenue (6 colonnes) et Le concept - Page 1 (6 colonnes) -->
     <v-row>
-      <v-col cols="12" md="6">
-        <v-card elevation="2">
-          <v-card-title>Concept</v-card-title>
-          <v-card-text>
-            <div ref="conceptEditor" class="quill-editor" />
-          </v-card-text>
-        </v-card>
-      </v-col>
-
       <v-col cols="12" md="6">
         <v-card elevation="2">
           <v-card-title>Bienvenue</v-card-title>
           <v-card-text>
             <div ref="welcomeEditor" class="quill-editor" />
-            
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-card elevation="2">
+          <v-card-title>Le concept - Page 1</v-card-title>
+          <v-card-text>
+            <div ref="intro1Editor" class="quill-editor" />
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
+    <!-- 2ème ligne : Le concept - Page 2 (6 colonnes) et Le concept - Page 3 (6 colonnes) -->
+    <v-row class="mt-4">
+      <v-col cols="12" md="6">
+        <v-card elevation="2">
+          <v-card-title>Le concept - Page 2</v-card-title>
+          <v-card-text>
+            <div ref="intro2Editor" class="quill-editor" />
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-card elevation="2">
+          <v-card-title>Le concept - Page 3</v-card-title>
+          <v-card-text>
+            <div ref="intro3Editor" class="quill-editor" />
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- 3ème ligne : CGU (12 colonnes) -->
     <v-row class="mt-4">
       <v-col cols="12">
         <v-card elevation="2">
@@ -36,17 +56,10 @@
 
     <v-row class="mt-4">
       <v-col class="text-right">
-        <v-btn
-          color="secondary"
-          variant="outlined"
-          @click="resetContent"
-          class="mr-2"
-        >
+        <v-btn color="secondary" variant="outlined" @click="resetContent" class="mr-2">
           Annuler
         </v-btn>
-        <v-btn color="primary" variant="flat" @click="saveContent">
-          Enregistrer
-        </v-btn>
+        <v-btn color="primary" variant="flat" @click="saveContent"> Enregistrer </v-btn>
       </v-col>
     </v-row>
 
@@ -74,16 +87,22 @@ interface ContentItem {
   description: string
 }
 
-const conceptEditor = ref<HTMLDivElement>()
 const cguEditor = ref<HTMLDivElement>()
 const welcomeEditor = ref<HTMLDivElement>()
+const intro1Editor = ref<HTMLDivElement>()
+const intro2Editor = ref<HTMLDivElement>()
+const intro3Editor = ref<HTMLDivElement>()
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let quillConcept: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillCgu: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillWelcome: any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let quillIntro1: any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let quillIntro2: any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let quillIntro3: any
 
 const snackbar = ref({
   show: false,
@@ -92,15 +111,19 @@ const snackbar = ref({
 })
 
 const contentData = ref({
-  concept: '',
   cgu: '',
   welcome: '',
+  intro_1: '',
+  intro_2: '',
+  intro_3: '',
 })
 
 const originalData = ref({
-  concept: '',
   cgu: '',
   welcome: '',
+  intro_1: '',
+  intro_2: '',
+  intro_3: '',
 })
 
 async function loadContent() {
@@ -111,14 +134,7 @@ async function loadContent() {
 
     items.forEach((item: ContentItem) => {
       console.log(`Loading ${item.key}:`, item.value)
-      if (item.key === 'concept') {
-        contentData.value.concept = item.value
-        if (quillConcept) {
-          // Vider puis charger
-          quillConcept.setContents([])
-          quillConcept.clipboard.dangerouslyPasteHTML(item.value)
-        }
-      } else if (item.key === 'cgu') {
+      if (item.key === 'cgu') {
         contentData.value.cgu = item.value
         if (quillCgu) {
           quillCgu.setContents([])
@@ -130,6 +146,26 @@ async function loadContent() {
           quillWelcome.setContents([])
           quillWelcome.clipboard.dangerouslyPasteHTML(item.value)
         }
+      } else if (item.key === 'intro_1') {
+        contentData.value.intro_1 = item.value
+        if (quillIntro1) {
+          quillIntro1.setContents([])
+          quillIntro1.clipboard.dangerouslyPasteHTML(item.value)
+        }
+      } else if (item.key === 'intro_2') {
+        contentData.value.intro_2 = item.value
+        if (quillIntro2) {
+          quillIntro2.setContents([])
+          quillIntro2.clipboard.dangerouslyPasteHTML(item.value)
+        }
+      } else if (item.key === 'intro_3') {
+        contentData.value.intro_3 = item.value
+        if (quillIntro3) {
+          quillIntro3.setContents([])
+          quillIntro3.clipboard.dangerouslyPasteHTML(item.value)
+        }
+      } else {
+        console.warn(`Unknown content key: ${item.key}`)
       }
     })
 
@@ -144,21 +180,33 @@ async function loadContent() {
 async function saveContent() {
   try {
     console.log('saveContent called')
-    const keys: Array<'concept' | 'cgu' | 'welcome'> = ['concept', 'cgu', 'welcome']
-    const quills = { concept: quillConcept, cgu: quillCgu, welcome: quillWelcome }
+    const keys: Array<'cgu' | 'welcome' | 'intro_1' | 'intro_2' | 'intro_3'> = [
+      'cgu',
+      'welcome',
+      'intro_1',
+      'intro_2',
+      'intro_3',
+    ]
+    const quills = {
+      cgu: quillCgu,
+      welcome: quillWelcome,
+      intro_1: quillIntro1,
+      intro_2: quillIntro2,
+      intro_3: quillIntro3,
+    }
 
     let savedCount = 0
-    
+
     for (const key of keys) {
       // Récupérer le contenu HTML de l'éditeur
       const content = quills[key]?.root.innerHTML || ''
       console.log(`Content for ${key}:`, content.substring(0, 100) + '...')
       console.log(`Original for ${key}:`, originalData.value[key].substring(0, 100) + '...')
       console.log(`Are they different?`, content !== originalData.value[key])
-      
+
       // Mettre à jour contentData
       contentData.value[key] = content
-      
+
       // Envoyer uniquement si le contenu a changé
       if (content !== originalData.value[key]) {
         console.log(`Calling API for ${key}`)
@@ -174,7 +222,7 @@ async function saveContent() {
 
     // Mettre à jour les données originales après sauvegarde réussie
     originalData.value = { ...contentData.value }
-    
+
     if (savedCount > 0) {
       showSnackbar(`${savedCount} contenu(s) enregistré(s) avec succès`, 'success')
     } else {
@@ -182,15 +230,11 @@ async function saveContent() {
     }
   } catch (err) {
     console.error('Error saving content:', err)
-    showSnackbar('Erreur lors de l\'enregistrement', 'error')
+    showSnackbar("Erreur lors de l'enregistrement", 'error')
   }
 }
 
 function resetContent() {
-  if (quillConcept) {
-    quillConcept.setContents([])
-    quillConcept.clipboard.dangerouslyPasteHTML(originalData.value.concept)
-  }
   if (quillCgu) {
     quillCgu.setContents([])
     quillCgu.clipboard.dangerouslyPasteHTML(originalData.value.cgu)
@@ -198,6 +242,18 @@ function resetContent() {
   if (quillWelcome) {
     quillWelcome.setContents([])
     quillWelcome.clipboard.dangerouslyPasteHTML(originalData.value.welcome)
+  }
+  if (quillIntro1) {
+    quillIntro1.setContents([])
+    quillIntro1.clipboard.dangerouslyPasteHTML(originalData.value.intro_1)
+  }
+  if (quillIntro2) {
+    quillIntro2.setContents([])
+    quillIntro2.clipboard.dangerouslyPasteHTML(originalData.value.intro_2)
+  }
+  if (quillIntro3) {
+    quillIntro3.setContents([])
+    quillIntro3.clipboard.dangerouslyPasteHTML(originalData.value.intro_3)
   }
   showSnackbar('Contenu réinitialisé', 'info')
 }
@@ -208,29 +264,6 @@ function showSnackbar(message: string, color: string) {
 
 onMounted(() => {
   // Initialiser les éditeurs Quill
-  if (conceptEditor.value) {
-    quillConcept = new Quill(conceptEditor.value, {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          ['bold', 'italic', 'underline', 'strike'],
-          ['blockquote', 'code-block'],
-          [{ header: 1 }, { header: 2 }],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['link', 'image'],
-          ['clean'],
-        ],
-        htmlEditButton: {},
-      },
-      placeholder: 'Entrez votre contenu ici...',
-    })
-    
-    // Écouter les changements de contenu
-    quillConcept.on('text-change', () => {
-      contentData.value.concept = quillConcept.root.innerHTML
-    })
-  }
-
   if (cguEditor.value) {
     quillCgu = new Quill(cguEditor.value, {
       theme: 'snow',
@@ -247,7 +280,7 @@ onMounted(() => {
       },
       placeholder: 'Entrez votre contenu ici...',
     })
-    
+
     // Écouter les changements de contenu
     quillCgu.on('text-change', () => {
       contentData.value.cgu = quillCgu.root.innerHTML
@@ -270,10 +303,79 @@ onMounted(() => {
       },
       placeholder: 'Entrez votre contenu ici...',
     })
-    
+
     // Écouter les changements de contenu
     quillWelcome.on('text-change', () => {
       contentData.value.welcome = quillWelcome.root.innerHTML
+    })
+  }
+
+  if (intro1Editor.value) {
+    quillIntro1 = new Quill(intro1Editor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        htmlEditButton: {},
+      },
+      placeholder: 'Entrez votre contenu ici...',
+    })
+
+    // Écouter les changements de contenu
+    quillIntro1.on('text-change', () => {
+      contentData.value.intro_1 = quillIntro1.root.innerHTML
+    })
+  }
+
+  if (intro2Editor.value) {
+    quillIntro2 = new Quill(intro2Editor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        htmlEditButton: {},
+      },
+      placeholder: 'Entrez votre contenu ici...',
+    })
+
+    // Écouter les changements de contenu
+    quillIntro2.on('text-change', () => {
+      contentData.value.intro_2 = quillIntro2.root.innerHTML
+    })
+  }
+
+  if (intro3Editor.value) {
+    quillIntro3 = new Quill(intro3Editor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        htmlEditButton: {},
+      },
+      placeholder: 'Entrez votre contenu ici...',
+    })
+
+    // Écouter les changements de contenu
+    quillIntro3.on('text-change', () => {
+      contentData.value.intro_3 = quillIntro3.root.innerHTML
     })
   }
 
