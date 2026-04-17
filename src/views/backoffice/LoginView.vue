@@ -3,12 +3,8 @@
     <v-row class="justify-center align-center" style="min-height: 100vh">
       <v-col cols="12" sm="8" md="6" lg="4">
         <v-card elevation="4">
-          <v-card-title class="text-center text-h4 mb-2">
-            Espace Admin
-          </v-card-title>
-          <v-card-subtitle class="text-center mb-4">
-            Citation du jour
-          </v-card-subtitle>
+          <v-card-title class="text-center text-h4 mb-2"> Espace Admin </v-card-title>
+          <v-card-subtitle class="text-center mb-4"> Ma Citation du Jour </v-card-subtitle>
 
           <v-card-text>
             <v-form @submit.prevent="submit">

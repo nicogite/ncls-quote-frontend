@@ -1,7 +1,7 @@
 <template>
   <div id="header-container">
     <header>
-      <h1 @click="goHome">Citation du jour</h1>
+      <h1 @click="goHome">Ma Citation du Jour</h1>
     </header>
   </div>
 </template>
@@ -10,7 +10,7 @@
 import { useRouter } from 'vue-router'
 
 defineOptions({
-  name: 'AppHeader'
+  name: 'AppHeader',
 })
 
 const router = useRouter()

@@ -20,7 +20,6 @@
         :headers="headers"
         :items="quotes"
         :loading="loading"
-        disable-sort
       >
         <!-- Colonne ID -->
         <!--template #item.id="{ item }">
@@ -43,14 +42,19 @@
           </div>
         </template>
 
+        <!-- Colonne wiki_link -->
+        <template #item.wiki_link="{ item }">
+          <div class="text-truncate" style="max-width: 200px">
+            <a v-if="item.wiki_link" :href="item.wiki_link" target="_blank">Lien</a>
+            <span v-else>-</span>
+          </div>
+        </template>
+
         <!-- Colonne rating -->
         <template #item.rating="{ item }">
-          <v-rating
-            v-model="item.rating"
-            density="compact"
-            readonly
-            color="warning"
-          />
+          <div>
+            {{ item.rating != null ? Number(item.rating).toFixed(1) : '-' }}
+          </div>
         </template>
 
         <!-- Colonne Créée -->
@@ -62,14 +66,7 @@
 
         <!-- Colonne actions -->
         <template #item.actions="{ item }">
-          <v-btn
-            size="small"
-            variant="text"
-            @click="editQuote(item)"
-            title="Éditer"
-          >
-            ✏️
-          </v-btn>
+          <v-btn size="small" variant="text" @click="editQuote(item)" title="Éditer"> ✏️ </v-btn>
           <v-btn
             size="small"
             variant="text"
@@ -104,11 +101,8 @@
               maxlength="1000"
               rows="4"
             />
-            <v-text-field
-              v-model="formData.author"
-              label="Auteur"
-              class="mt-4"
-            />
+            <v-text-field v-model="formData.author" label="Auteur" class="mt-4" />
+            <v-text-field v-model="formData.wiki_link" label="Lien wiki" class="mt-4" />
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -149,13 +143,12 @@ const total = ref(0)
 const loading = ref(false)
 const dialogOpen = ref(false)
 const editingId = ref<number | null>(null)
-const formData = ref({ text: '', author: '' })
+const formData = ref({ text: '', author: '', wiki_link: '' })
 
-console.log('page', page.value);
-console.log('limit', limit.value);
-console.log('total', total.value);
-console.log('loading', loading.value);
-
+console.log('page', page.value)
+console.log('limit', limit.value)
+console.log('total', total.value)
+console.log('loading', loading.value)
 
 const snackbar = ref({
   show: false,
@@ -164,9 +157,10 @@ const snackbar = ref({
 })
 
 const headers = [
-  { title: '#', key: 'id', width: '10%' },
-  { title: 'Citation', key: 'text', width: '30%' },
-  { title: 'Auteur', key: 'author', width: '20%' },
+  { title: '#', key: 'id', width: '10%', sortable: false },
+  { title: 'Citation', key: 'text', width: '20%', sortable: false },
+  { title: 'Auteur', key: 'author', width: '15%', sortable: false },
+  { title: 'Wiki link', key: 'wiki_link', width: '15%', sortable: false },
   { title: 'Vues', key: 'nb_views', width: '10%' },
   { title: 'Note', key: 'rating', width: '10%' },
   { title: 'Créée', key: 'created_at', width: '10%' },
@@ -179,7 +173,7 @@ async function fetchQuotes(pageNum?: number) {
   try {
     // Charger TOUTES les citations (pas de pagination serveur)
     const response = await axios.get('/api/admin/quotes', {
-      params: { limit: 1000 },  // Large limit pour avoir toutes les données
+      params: { limit: 1000 }, // Large limit pour avoir toutes les données
     })
     console.log('Fetched quotes:', response.data)
     quotes.value = response.data.data
@@ -198,13 +192,13 @@ async function fetchQuotes(pageNum?: number) {
 
 function openCreateDialog() {
   editingId.value = null
-  formData.value = { text: '', author: '' }
+  formData.value = { text: '', author: '', wiki_link: '' }
   dialogOpen.value = true
 }
 
 function editQuote(quote: Quote) {
   editingId.value = quote.id
-  formData.value = { text: quote.text, author: quote.author }
+  formData.value = { text: quote.text, author: quote.author, wiki_link: quote.wiki_link }
   dialogOpen.value = true
 }
 

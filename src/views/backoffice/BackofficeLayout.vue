@@ -5,7 +5,7 @@
       <!-- Header du drawer -->
       <div class="sidebar-header">
         <h3>Admin</h3>
-        <p>La citation du jour</p>
+        <p>Ma citation du jour</p>
       </div>
 
       <!-- Navigation Items -->
@@ -35,9 +35,7 @@
     <main class="main-content">
       <!-- Top Bar -->
       <header class="top-bar">
-        <button class="menu-toggle" @click="rail = !rail">
-          ☰
-        </button>
+        <button class="menu-toggle" @click="rail = !rail">☰</button>
         <h1>Espace d'administration</h1>
         <div class="spacer" />
         <button class="notification-btn">🔔</button>
