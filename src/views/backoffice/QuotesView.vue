@@ -6,6 +6,9 @@
         <h2 class="text-h4">Citations</h2>
       </v-col>
       <v-col class="text-right">
+        <v-btn color="success" prepend-icon="mdi-download" @click="exportToCSV" class="mr-2">
+          Export CSV
+        </v-btn>
         <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog">
           Ajouter une citation
         </v-btn>
@@ -247,6 +250,48 @@ function formatDate(dateString: string): string {
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const year = date.getFullYear()
   return `${day}-${month}-${year}`
+}
+
+function exportToCSV() {
+  try {
+    // En-têtes CSV
+    const headers = ['ID', 'Citation', 'Auteur', 'Lien Wiki', 'Vues', 'Note', 'Date de création']
+    
+    // Convertir les données en lignes CSV
+    const csvRows = [
+      headers.join('\t'), // Ligne d'en-tête avec tabulations
+      ...quotes.value.map(quote => [
+        quote.id,
+        `"${quote.text.replace(/"/g, '""')}"`, // Échapper les guillemets
+        `"${quote.author.replace(/"/g, '""')}"`,
+        `"${quote.wiki_link || ''}"`,
+        quote.nb_views || 0,
+        quote.rating != null ? Number(quote.rating).toFixed(1) : '',
+        formatDate(quote.created_at)
+      ].join('\t')) // Colonnes séparées par tabulations
+    ]
+    
+    // Créer le contenu CSV
+    const csvContent = csvRows.join('\n')
+    
+    // Créer un blob et télécharger
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    const timestamp = new Date().toISOString().split('T')[0]
+    
+    link.setAttribute('href', url)
+    link.setAttribute('download', `citations_${timestamp}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    showSnackbar(`${quotes.value.length} citations exportées avec succès`, 'success')
+  } catch (err) {
+    console.error('Error exporting CSV:', err)
+    showSnackbar('Erreur lors de l\'export CSV', 'error')
+  }
 }
 
 onMounted(() => {
