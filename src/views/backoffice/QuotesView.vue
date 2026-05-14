@@ -181,10 +181,6 @@ async function fetchQuotes(pageNum?: number) {
     console.log('Fetched quotes:', response.data)
     quotes.value = response.data.data
     total.value = parseInt(response.data.total)
-    console.log('✓ Loaded all quotes:', {
-      itemsCount: quotes.value.length,
-      total: total.value,
-    })
   } catch (err) {
     console.error('Error fetching quotes:', err)
     showSnackbar('Erreur lors du chargement des citations', 'error')
