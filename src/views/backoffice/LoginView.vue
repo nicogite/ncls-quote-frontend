@@ -5,8 +5,7 @@
       <div class="login-panel__inner">
         <span class="login-panel__eyebrow">Ma Citation du Jour</span>
         <h1 class="login-panel__title">
-          L'atelier où s'<em>orchestre</em><br />
-          la citation du jour.
+           Chaque jour, une nouvelle citation pour <em>vous</em>
         </h1>
         <p class="login-panel__lede">
           Une régie sobre pour préparer chaque matin une pensée à offrir.
@@ -26,7 +25,7 @@
       <div class="login-panel__credit">
         <span>Édition&nbsp;{{ year }}</span>
         <span class="login-panel__credit-dot">•</span>
-        <span>Verbamundi</span>
+        <span>Ma Citation du Jour</span>
       </div>
     </aside>
 
@@ -502,11 +501,13 @@ async function submit() {
 @media (max-width: 960px) {
   .login-shell { grid-template-columns: 1fr; }
   .login-panel {
-    padding: 40px 28px 80px;
+    padding: 40px 28px 56px;
     min-height: 40vh;
+    gap: 48px;
   }
   .login-panel::before { left: 28px; right: 28px; top: 28px; }
   .login-panel__mark { font-size: 80vw; bottom: -10vh; right: -10vw; }
+  .login-panel__credit { margin-top: 48px; }
   .login-form { padding: 40px 24px; }
 }
 </style>
