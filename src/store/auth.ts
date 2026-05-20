@@ -7,7 +7,7 @@ interface AdminUser {
   email: string
 }
 
-function decodeJwt(token: string): { sub?: number; email?: string } | null {
+function decodeJwt(token: string): { sub?: number; email?: string; exp?: number } | null {
   try {
     const payload = token.split('.')[1]
     if (!payload) return null
@@ -19,6 +19,12 @@ function decodeJwt(token: string): { sub?: number; email?: string } | null {
   }
 }
 
+function isTokenExpired(token: string): boolean {
+  const payload = decodeJwt(token)
+  if (!payload?.exp) return false
+  return Date.now() >= payload.exp * 1000
+}
+
 function userFromToken(token: string | null): AdminUser | null {
   if (!token) return null
   const payload = decodeJwt(token)
@@ -27,7 +33,14 @@ function userFromToken(token: string | null): AdminUser | null {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref<string | null>(localStorage.getItem('admin_token'))
+  const storedToken = localStorage.getItem('admin_token')
+  const validStoredToken =
+    storedToken && !isTokenExpired(storedToken) ? storedToken : null
+  if (!validStoredToken && storedToken) {
+    localStorage.removeItem('admin_token')
+  }
+
+  const token = ref<string | null>(validStoredToken)
   const user = ref<AdminUser | null>(userFromToken(token.value))
 
   if (token.value) {
@@ -68,7 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
     setToken(null)
   }
 
-  const isAuthenticated = () => !!token.value
+  const isAuthenticated = () => !!token.value && !isTokenExpired(token.value)
 
   return { token, user, displayName, setToken, login, logout, isAuthenticated }
 })
