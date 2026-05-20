@@ -1,111 +1,400 @@
 @import './base.css';
 
-body {
-  background-image: -webkit-gradient(linear,center top,center bottom,color-stop(0,#FFFFFF),color-stop(1,#D2C1B6));
-  background-image: -webkit-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
-  background-image: -moz-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
-  background-image: -ms-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
-  background-image: -o-linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
-  background-image: linear-gradient(top,#FFFFFF 0%,#D2C1B6 100%);
-}
-
-html, body, #app {
-  font-family: var(--app-font);
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-}
-
-h2 {
-  margin-bottom: 2rem;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: var(--the-quote-light-blue);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    
-  }
-
-  #app {
-    padding: 0 2rem;
-  }
-}
+/* ============================================================
+ * Ma Citation du Jour — Admin design system
+ * Editorial light: cream paper, teal masthead, gold hairlines
+ * Inspired by the logo's masthead/paper composition
+ * ============================================================ */
 
 @font-face {
   font-family: 'MyFontItalic';
-  src: url('/src/assets/fonts/inter/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
+  src: url('/src/assets/fonts/playfair/inter/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'MyFont';
-  src: url('/src/assets/fonts/inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
-  font-weight: 400;
+  src: url('/src/assets/fonts/playfair/inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
-
 @font-face {
   font-family: 'CitationItalicFont';
-  src: url('/src/assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
+  src: url('/src/assets/fonts/playfair/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 900;
+  font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'CitationFont';
-  src: url('/src/assets/fonts/PlayfairDisplay-VariableFont_wght.ttf') format('truetype');
-  font-weight: 400;
+  src: url('/src/assets/fonts/playfair/PlayfairDisplay-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 900;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --the-quote-focus-color: var(--the-quote-medium-blue); /* remplace par ta couleur (ou utilise --the-quote-medium-blue) */
-  --app-font: 'MyFont', system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans";
-  --citation-font: 'CitationFont', serif;
-  --citation-italic-font: 'CitationItalicFont', serif;
+  /* Brand — sampled from logo */
+  --mcdj-teal-900: #0F4144;
+  --mcdj-teal-800: #154C4F;
+  --mcdj-teal-700: #1F6B6E;
+  --mcdj-teal-600: #2A7B7E;
+  --mcdj-teal-50:  #E6F0F0;
+
+  /* Paper / parchment */
+  --mcdj-cream-50:  #FBF7EE;  /* card */
+  --mcdj-cream-100: #F5EFE3;  /* page background */
+  --mcdj-cream-200: #ECE3D0;  /* divider on cream */
+  --mcdj-cream-300: #D9CDB4;  /* muted border on cream */
+
+  /* Ink */
+  --mcdj-ink-900: #1B1F23;
+  --mcdj-ink-700: #353B41;
+  --mcdj-ink-500: #6B6660;    /* muted body */
+  --mcdj-ink-300: #A39C92;
+
+  /* Accent — brushed gold from the hairline below the masthead */
+  --mcdj-gold-700: #A8884A;
+  --mcdj-gold-500: #C9A961;
+  --mcdj-gold-300: #E6D5A8;
+  --mcdj-gold-100: #F5EBCF;
+
+  /* Semantics */
+  --mcdj-success: #5B7A4C;
+  --mcdj-warning: #C58A2B;
+  --mcdj-danger:  #A8421C;
+
+  /* Surfaces & strokes */
+  --mcdj-surface:        var(--mcdj-cream-100);
+  --mcdj-surface-card:   var(--mcdj-cream-50);
+  --mcdj-surface-sunken: #EDE5D2;
+  --mcdj-stroke:         rgba(27, 31, 35, 0.08);
+  --mcdj-stroke-strong:  rgba(27, 31, 35, 0.16);
+  --mcdj-stroke-gold:    rgba(201, 169, 97, 0.55);
+
+  /* Shadows — soft, paper-like, never blue */
+  --mcdj-shadow-sm: 0 1px 2px rgba(27, 31, 35, 0.04), 0 1px 1px rgba(27, 31, 35, 0.03);
+  --mcdj-shadow-md: 0 6px 16px -8px rgba(27, 31, 35, 0.18), 0 2px 4px rgba(27, 31, 35, 0.04);
+  --mcdj-shadow-lg: 0 24px 48px -24px rgba(15, 65, 68, 0.28), 0 8px 16px -12px rgba(27, 31, 35, 0.08);
+
+  /* Radii — restrained, editorial, not chunky */
+  --mcdj-r-xs: 2px;
+  --mcdj-r-sm: 4px;
+  --mcdj-r-md: 8px;
+  --mcdj-r-lg: 12px;
+
+  /* Fonts */
+  --app-font: 'MyFont', 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --citation-font: 'CitationFont', 'Playfair Display', 'Georgia', serif;
+  --citation-italic-font: 'CitationItalicFont', 'Playfair Display', 'Georgia', serif;
+  --display-font: var(--citation-font);
+
+  /* Paper grain — embedded SVG, no extra HTTP request */
+  --mcdj-paper-grain:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42  0 0 0 0 0.36  0 0 0 0 0.27  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+
+  /* Legacy aliases — kept so existing public views still resolve */
+  --the-quote-focus-color: var(--mcdj-teal-700);
+  --the-quote-dark-blue:   var(--mcdj-teal-900);
+  --the-quote-medium-blue: var(--mcdj-teal-700);
+  --the-quote-light-blue:  var(--mcdj-teal-600);
 }
 
+/* ------------------------------------------------------------ */
+/* Base                                                          */
+/* ------------------------------------------------------------ */
 
-
-/* outline (SVG stroke) des champs outlined au focus */
-.v-field.v-field--outlined.v-field--focused .v-field__outline {
-  stroke: var(--the-quote-focus-color) !important;
+html, body, #app {
+  font-family: var(--app-font);
+  color: var(--mcdj-ink-900);
 }
 
-/* couleur du label au focus */
+body {
+  background: var(--mcdj-cream-100);
+  background-image:
+    var(--mcdj-paper-grain),
+    radial-gradient(1200px 600px at 80% -10%, rgba(31, 107, 110, 0.06), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(201, 169, 97, 0.10), transparent 60%);
+  background-attachment: fixed;
+  background-size: 320px 320px, auto, auto;
+  min-height: 100vh;
+}
+
+/* Reset the legacy max-width that constrained the old admin UI */
+#app {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+a {
+  color: var(--mcdj-teal-700);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+a:hover {
+  color: var(--mcdj-teal-800);
+  border-bottom-color: var(--mcdj-gold-500);
+  background: transparent;
+}
+
+/* ------------------------------------------------------------ */
+/* Reusable editorial primitives                                 */
+/* ------------------------------------------------------------ */
+
+.mcdj-eyebrow {
+  font-family: var(--app-font);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mcdj-teal-700);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.mcdj-eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--mcdj-gold-500);
+}
+
+.mcdj-display {
+  font-family: var(--display-font);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  color: var(--mcdj-ink-900);
+}
+
+.mcdj-rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--mcdj-gold-500) 12%,
+    var(--mcdj-gold-500) 88%,
+    transparent
+  );
+  border: 0;
+  margin: 0;
+}
+
+.mcdj-card {
+  background: var(--mcdj-surface-card);
+  border: 1px solid var(--mcdj-stroke);
+  border-radius: var(--mcdj-r-md);
+  box-shadow: var(--mcdj-shadow-sm);
+  position: relative;
+}
+.mcdj-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--mcdj-paper-grain);
+  opacity: 0.45;
+  mix-blend-mode: multiply;
+}
+.mcdj-card > * { position: relative; }
+
+/* ------------------------------------------------------------ */
+/* Vuetify integration — re-skin without breaking components     */
+/* ------------------------------------------------------------ */
+
+.v-application {
+  background: transparent !important;
+  font-family: var(--app-font) !important;
+}
+
+/* Buttons */
+.v-btn {
+  font-family: var(--app-font) !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  border-radius: var(--mcdj-r-sm) !important;
+}
+.v-btn--variant-flat.bg-primary,
+.v-btn[color='primary'].v-btn--variant-flat,
+.v-btn--variant-elevated.bg-primary {
+  background: var(--mcdj-teal-700) !important;
+  color: #FBF7EE !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, var(--mcdj-shadow-sm) !important;
+}
+.v-btn--variant-flat.bg-primary:hover,
+.v-btn[color='primary'].v-btn--variant-flat:hover {
+  background: var(--mcdj-teal-800) !important;
+}
+.v-btn[color='success'].v-btn--variant-flat,
+.v-btn--variant-flat.bg-success {
+  background: var(--mcdj-success) !important;
+  color: #FBF7EE !important;
+}
+.v-btn[color='red'],
+.v-btn[color='error'] {
+  color: var(--mcdj-danger) !important;
+}
+
+/* Inputs */
+.v-field--variant-outlined .v-field__outline__start,
+.v-field--variant-outlined .v-field__outline__end,
+.v-field--variant-outlined .v-field__outline__notch::before,
+.v-field--variant-outlined .v-field__outline__notch::after {
+  border-color: var(--mcdj-stroke-strong) !important;
+}
+.v-field--variant-outlined.v-field--focused .v-field__outline__start,
+.v-field--variant-outlined.v-field--focused .v-field__outline__end,
+.v-field--variant-outlined.v-field--focused .v-field__outline__notch::before,
+.v-field--variant-outlined.v-field--focused .v-field__outline__notch::after {
+  border-color: var(--mcdj-teal-700) !important;
+  border-width: 1.5px !important;
+}
 .v-field.v-field--focused .v-field__label {
-  color: var(--the-quote-focus-color) !important;
+  color: var(--mcdj-teal-700) !important;
+}
+.v-field input,
+.v-field textarea {
+  caret-color: var(--mcdj-teal-700) !important;
 }
 
-/* caret / sélection pour inputs & textarea */
-.v-field.v-field--focused input,
-.v-field.v-field--focused textarea {
-  caret-color: var(--the-quote-focus-color);
-  border: 5px;
+/* Cards */
+.v-card {
+  background: var(--mcdj-surface-card) !important;
+  color: var(--mcdj-ink-900) !important;
+  border: 1px solid var(--mcdj-stroke);
+  border-radius: var(--mcdj-r-md) !important;
+  box-shadow: var(--mcdj-shadow-sm) !important;
+}
+.v-card-title {
+  font-family: var(--display-font) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.005em;
+  color: var(--mcdj-ink-900) !important;
 }
 
-/* si tu utilises les variantes VTextField / VTextarea (Vuetify defaults), assurer compatibilité */
-.v-text-field.v-field--outlined.v-field--focused .v-field__outline,
-.v-textarea.v-field--outlined.v-field--focused .v-field__outline {
-  stroke: var(--the-quote-focus-color) !important;
+/* Data table */
+.v-data-table {
+  background: transparent !important;
+  font-family: var(--app-font) !important;
+}
+.v-data-table-header__content {
+  font-family: var(--app-font) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase;
+  color: var(--mcdj-teal-700) !important;
+  font-weight: 600 !important;
+}
+.v-data-table thead th {
+  border-bottom: 1px solid var(--mcdj-stroke-gold) !important;
+  background: transparent !important;
+}
+.v-data-table tbody tr {
+  transition: background-color 160ms ease;
+}
+.v-data-table tbody tr:hover {
+  background: rgba(31, 107, 110, 0.04) !important;
+}
+.v-data-table tbody td {
+  border-bottom: 1px solid var(--mcdj-stroke) !important;
+}
+
+/* Dialog */
+.v-overlay__scrim { background: var(--mcdj-ink-900) !important; opacity: 0.55 !important; }
+.v-dialog .v-card { box-shadow: var(--mcdj-shadow-lg) !important; }
+
+/* Snackbar */
+.v-snackbar__wrapper {
+  border-radius: var(--mcdj-r-sm) !important;
+  font-family: var(--app-font) !important;
+}
+
+/* Focus ring across the admin */
+.v-btn:focus-visible,
+.v-field--focused {
+  outline: none;
+}
+.v-btn:focus-visible::after {
+  box-shadow: 0 0 0 2px var(--mcdj-cream-100), 0 0 0 4px var(--mcdj-gold-500) !important;
+  border-radius: inherit;
+  opacity: 1 !important;
+}
+
+/* Quill toolbar accord — applies wherever Quill is rendered */
+.ql-toolbar.ql-snow {
+  background: var(--mcdj-surface-sunken) !important;
+  border: 1px solid var(--mcdj-stroke) !important;
+  border-bottom: 1px solid var(--mcdj-stroke-gold) !important;
+  border-radius: var(--mcdj-r-sm) var(--mcdj-r-sm) 0 0 !important;
+  font-family: var(--app-font) !important;
+}
+.ql-container.ql-snow {
+  border: 1px solid var(--mcdj-stroke) !important;
+  border-top: none !important;
+  border-radius: 0 0 var(--mcdj-r-sm) var(--mcdj-r-sm) !important;
+  background: #fff !important;
+}
+.ql-editor {
+  font-family: var(--app-font) !important;
+  color: var(--mcdj-ink-900) !important;
+  line-height: 1.6;
+}
+.ql-snow .ql-stroke { stroke: var(--mcdj-ink-700) !important; }
+.ql-snow .ql-fill   { fill:   var(--mcdj-ink-700) !important; }
+.ql-snow .ql-picker { color:  var(--mcdj-ink-700) !important; }
+.ql-snow.ql-toolbar button:hover,
+.ql-snow.ql-toolbar button.ql-active {
+  color: var(--mcdj-teal-700) !important;
+}
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke {
+  stroke: var(--mcdj-teal-700) !important;
+}
+.ql-snow.ql-toolbar button:hover .ql-fill,
+.ql-snow.ql-toolbar button.ql-active .ql-fill {
+  fill: var(--mcdj-teal-700) !important;
+}
+
+/* Selection */
+::selection {
+  background: var(--mcdj-gold-300);
+  color: var(--mcdj-ink-900);
+}
+
+/* Scrollbar — subtle, on-brand */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mcdj-cream-300) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: var(--mcdj-cream-300);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--mcdj-gold-300); background-clip: padding-box; border: 2px solid transparent; }
+
+/* Motion */
+@keyframes mcdj-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes mcdj-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

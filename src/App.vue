@@ -1,20 +1,24 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+
+const route = useRoute()
+const isAdmin = computed(() => route.path.startsWith('/admin'))
 </script>
 
 <template>
   <div>
-    <Header />
-    <div id="main-container">
-      <!--router-view /-->
+    <Header v-if="!isAdmin" />
+    <div :id="isAdmin ? undefined : 'main-container'">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" :key="$route.fullPath" />
         </transition>
       </router-view>
     </div>
-    <Footer />
+    <Footer v-if="!isAdmin" />
   </div>
 </template>
 
