@@ -62,6 +62,14 @@
           </header>
           <div ref="intro3Editor" class="quill-host" />
         </article>
+
+        <article class="cv-editor">
+          <header class="cv-editor__head">
+            <span class="cv-editor__tag">Concept · Page 4</span>
+            <span class="cv-editor__hint">Quatrième écran de l'onboarding</span>
+          </header>
+          <div ref="intro4Editor" class="quill-host" />
+        </article>
       </div>
     </section>
 
@@ -122,6 +130,7 @@ const welcomeEditor = ref<HTMLDivElement>()
 const intro1Editor = ref<HTMLDivElement>()
 const intro2Editor = ref<HTMLDivElement>()
 const intro3Editor = ref<HTMLDivElement>()
+const intro4Editor = ref<HTMLDivElement>()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillCgu: any
@@ -133,6 +142,8 @@ let quillIntro1: any
 let quillIntro2: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillIntro3: any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let quillIntro4: any
 
 const snackbar = ref({
   show: false,
@@ -146,6 +157,7 @@ const contentData = ref({
   intro_1: '',
   intro_2: '',
   intro_3: '',
+  intro_4: '',
 })
 
 const originalData = ref({
@@ -154,6 +166,7 @@ const originalData = ref({
   intro_1: '',
   intro_2: '',
   intro_3: '',
+  intro_4: '',
 })
 
 async function loadContent() {
@@ -194,6 +207,12 @@ async function loadContent() {
           quillIntro3.setContents([])
           quillIntro3.clipboard.dangerouslyPasteHTML(item.value)
         }
+      } else if (item.key === 'intro_4') {
+        contentData.value.intro_4 = item.value
+        if (quillIntro4) {
+          quillIntro4.setContents([])
+          quillIntro4.clipboard.dangerouslyPasteHTML(item.value)
+        }
       } else {
         console.warn(`Unknown content key: ${item.key}`)
       }
@@ -210,12 +229,13 @@ async function loadContent() {
 async function saveContent() {
   try {
     console.log('saveContent called')
-    const keys: Array<'cgu' | 'welcome' | 'intro_1' | 'intro_2' | 'intro_3'> = [
+    const keys: Array<'cgu' | 'welcome' | 'intro_1' | 'intro_2' | 'intro_3' | 'intro_4'> = [
       'cgu',
       'welcome',
       'intro_1',
       'intro_2',
       'intro_3',
+      'intro_4',
     ]
     const quills = {
       cgu: quillCgu,
@@ -223,6 +243,7 @@ async function saveContent() {
       intro_1: quillIntro1,
       intro_2: quillIntro2,
       intro_3: quillIntro3,
+      intro_4: quillIntro4,
     }
 
     let savedCount = 0
@@ -284,6 +305,10 @@ function resetContent() {
   if (quillIntro3) {
     quillIntro3.setContents([])
     quillIntro3.clipboard.dangerouslyPasteHTML(originalData.value.intro_3)
+  }
+  if (quillIntro4) {
+    quillIntro4.setContents([])
+    quillIntro4.clipboard.dangerouslyPasteHTML(originalData.value.intro_4)
   }
   showSnackbar('Contenu réinitialisé', 'info')
 }
@@ -406,6 +431,29 @@ onMounted(() => {
     // Écouter les changements de contenu
     quillIntro3.on('text-change', () => {
       contentData.value.intro_3 = quillIntro3.root.innerHTML
+    })
+  }
+
+  if (intro4Editor.value) {
+    quillIntro4 = new Quill(intro4Editor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        htmlEditButton: {},
+      },
+      placeholder: 'Entrez votre contenu ici...',
+    })
+
+    // Écouter les changements de contenu
+    quillIntro4.on('text-change', () => {
+      contentData.value.intro_4 = quillIntro4.root.innerHTML
     })
   }
 
