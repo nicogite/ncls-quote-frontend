@@ -77,6 +77,23 @@
       <div class="cv-section__head">
         <span class="cv-step">02</span>
         <div>
+          <h2 class="cv-section__title">Citation du jour</h2>
+          <p class="cv-section__sub">Texte affiché sous la citation quotidienne pour inviter le lecteur à la méditation.</p>
+        </div>
+      </div>
+      <article class="cv-editor cv-editor--wide">
+        <header class="cv-editor__head">
+          <span class="cv-editor__tag">Méditation autour de la citation</span>
+          <span class="cv-editor__hint">Affiché progressivement sous la citation du jour</span>
+        </header>
+        <div ref="postCitationEditor" class="quill-host" />
+      </article>
+    </section>
+
+    <section class="cv-section">
+      <div class="cv-section__head">
+        <span class="cv-step">03</span>
+        <div>
           <h2 class="cv-section__title">Conditions générales</h2>
           <p class="cv-section__sub">Mentions légales et conditions d'utilisation accessibles depuis l'application.</p>
         </div>
@@ -131,6 +148,7 @@ const intro1Editor = ref<HTMLDivElement>()
 const intro2Editor = ref<HTMLDivElement>()
 const intro3Editor = ref<HTMLDivElement>()
 const intro4Editor = ref<HTMLDivElement>()
+const postCitationEditor = ref<HTMLDivElement>()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillCgu: any
@@ -144,6 +162,8 @@ let quillIntro2: any
 let quillIntro3: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillIntro4: any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let quillPostCitation: any
 
 const snackbar = ref({
   show: false,
@@ -158,6 +178,7 @@ const contentData = ref({
   intro_2: '',
   intro_3: '',
   intro_4: '',
+  test_post_citation: '',
 })
 
 const originalData = ref({
@@ -167,6 +188,7 @@ const originalData = ref({
   intro_2: '',
   intro_3: '',
   intro_4: '',
+  test_post_citation: '',
 })
 
 async function loadContent() {
@@ -213,6 +235,12 @@ async function loadContent() {
           quillIntro4.setContents([])
           quillIntro4.clipboard.dangerouslyPasteHTML(item.value)
         }
+      } else if (item.key === 'test_post_citation') {
+        contentData.value.test_post_citation = item.value
+        if (quillPostCitation) {
+          quillPostCitation.setContents([])
+          quillPostCitation.clipboard.dangerouslyPasteHTML(item.value)
+        }
       } else {
         console.warn(`Unknown content key: ${item.key}`)
       }
@@ -229,13 +257,14 @@ async function loadContent() {
 async function saveContent() {
   try {
     console.log('saveContent called')
-    const keys: Array<'cgu' | 'welcome' | 'intro_1' | 'intro_2' | 'intro_3' | 'intro_4'> = [
+    const keys: Array<'cgu' | 'welcome' | 'intro_1' | 'intro_2' | 'intro_3' | 'intro_4' | 'test_post_citation'> = [
       'cgu',
       'welcome',
       'intro_1',
       'intro_2',
       'intro_3',
       'intro_4',
+      'test_post_citation',
     ]
     const quills = {
       cgu: quillCgu,
@@ -244,6 +273,7 @@ async function saveContent() {
       intro_2: quillIntro2,
       intro_3: quillIntro3,
       intro_4: quillIntro4,
+      test_post_citation: quillPostCitation,
     }
 
     let savedCount = 0
@@ -309,6 +339,10 @@ function resetContent() {
   if (quillIntro4) {
     quillIntro4.setContents([])
     quillIntro4.clipboard.dangerouslyPasteHTML(originalData.value.intro_4)
+  }
+  if (quillPostCitation) {
+    quillPostCitation.setContents([])
+    quillPostCitation.clipboard.dangerouslyPasteHTML(originalData.value.test_post_citation)
   }
   showSnackbar('Contenu réinitialisé', 'info')
 }
@@ -454,6 +488,29 @@ onMounted(() => {
     // Écouter les changements de contenu
     quillIntro4.on('text-change', () => {
       contentData.value.intro_4 = quillIntro4.root.innerHTML
+    })
+  }
+
+  if (postCitationEditor.value) {
+    quillPostCitation = new Quill(postCitationEditor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        htmlEditButton: {},
+      },
+      placeholder: 'Entrez votre contenu ici...',
+    })
+
+    // Écouter les changements de contenu
+    quillPostCitation.on('text-change', () => {
+      contentData.value.test_post_citation = quillPostCitation.root.innerHTML
     })
   }
 
