@@ -147,6 +147,11 @@
               <input v-model="formData.wiki_link" class="field__input" placeholder="https://fr.wikipedia.org/wiki/…" />
             </label>
           </div>
+
+          <div class="field">
+            <span class="field__label">Interprétation</span>
+            <div ref="interpretationEditor" class="quill-host" />
+          </div>
         </form>
 
         <footer class="dlg__foot">
@@ -165,8 +170,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import axios from 'axios'
+
+import Quill from 'quill'
+import 'quill/dist/quill.snow.css'
+import htmlEditButton from 'quill-html-edit-button'
+
+Quill.register('modules/htmlEditButton', htmlEditButton)
 
 interface Quote {
   id: number
@@ -175,6 +186,7 @@ interface Quote {
   nb_views: number
   rating: number
   wiki_link: string
+  interpretation: string
   created_at: string
 }
 
@@ -185,7 +197,11 @@ const total = ref(0)
 const loading = ref(false)
 const dialogOpen = ref(false)
 const editingId = ref<number | null>(null)
-const formData = ref({ text: '', author: '', wiki_link: '' })
+const formData = ref({ text: '', author: '', wiki_link: '', interpretation: '' })
+
+const interpretationEditor = ref<HTMLDivElement>()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let quillInterpretation: any = null
 
 const snackbar = ref({
   show: false,
@@ -222,20 +238,61 @@ async function fetchQuotes() {
 
 function openCreateDialog() {
   editingId.value = null
-  formData.value = { text: '', author: '', wiki_link: '' }
+  formData.value = { text: '', author: '', wiki_link: '', interpretation: '' }
   dialogOpen.value = true
 }
 
 function editQuote(quote: Quote) {
   editingId.value = quote.id
-  formData.value = { text: quote.text, author: quote.author, wiki_link: quote.wiki_link }
+  formData.value = {
+    text: quote.text,
+    author: quote.author,
+    wiki_link: quote.wiki_link,
+    interpretation: quote.interpretation ?? '',
+  }
   dialogOpen.value = true
 }
+
+// L'éditeur Quill vit dans la popup : son DOM n'existe qu'à l'ouverture.
+// On (re)crée une instance fraîche à chaque ouverture et on la détruit à la fermeture.
+watch(dialogOpen, async (open) => {
+  if (open) {
+    await nextTick()
+    if (!interpretationEditor.value) return
+    quillInterpretation = new Quill(interpretationEditor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        htmlEditButton: {},
+      },
+      placeholder: "Interprétation de la citation…",
+    })
+    quillInterpretation.clipboard.dangerouslyPasteHTML(formData.value.interpretation || '')
+    quillInterpretation.on('text-change', () => {
+      formData.value.interpretation = quillInterpretation.root.innerHTML
+    })
+  } else {
+    quillInterpretation = null
+  }
+})
 
 async function saveQuote() {
   if (!formData.value.text.trim()) {
     showSnackbar('Le texte de la citation est requis', 'error')
     return
+  }
+
+  // Récupérer le HTML de l'éditeur, en neutralisant le contenu « vide » de Quill
+  if (quillInterpretation) {
+    const html = quillInterpretation.root.innerHTML
+    formData.value.interpretation = quillInterpretation.getText().trim() ? html : ''
   }
 
   try {
@@ -629,6 +686,43 @@ onMounted(() => {
   color: var(--mcdj-ink-300);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
+}
+
+/* Quill editor inside dialog */
+.quill-host {
+  border: 1px solid var(--mcdj-stroke-strong);
+  border-radius: var(--mcdj-r-sm);
+  overflow: hidden;
+  background: var(--mcdj-cream-50);
+}
+:deep(.ql-toolbar.ql-snow) {
+  padding: 8px 12px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--mcdj-stroke) !important;
+  background: var(--mcdj-cream-100) !important;
+  border-radius: 0 !important;
+}
+:deep(.ql-container.ql-snow) {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--mcdj-cream-50) !important;
+  min-height: 160px;
+}
+:deep(.ql-editor) {
+  min-height: 160px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-family: var(--app-font);
+  color: var(--mcdj-ink-900);
+  line-height: 1.6;
+  padding: 14px 16px;
+}
+:deep(.ql-editor.ql-blank::before) {
+  font-style: italic;
+  color: var(--mcdj-ink-300);
+  font-family: var(--citation-italic-font);
+  left: 16px;
+  right: 16px;
 }
 
 /* Vuetify data-table fine tweaks scoped to this view */
