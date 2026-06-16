@@ -70,6 +70,14 @@
           </header>
           <div ref="intro4Editor" class="quill-host" />
         </article>
+
+        <article class="cv-editor">
+          <header class="cv-editor__head">
+            <span class="cv-editor__tag">Concept · Page 5</span>
+            <span class="cv-editor__hint">Cinquième écran de l'onboarding</span>
+          </header>
+          <div ref="intro5Editor" class="quill-host" />
+        </article>
       </div>
     </section>
 
@@ -148,6 +156,7 @@ const intro1Editor = ref<HTMLDivElement>()
 const intro2Editor = ref<HTMLDivElement>()
 const intro3Editor = ref<HTMLDivElement>()
 const intro4Editor = ref<HTMLDivElement>()
+const intro5Editor = ref<HTMLDivElement>()
 const postCitationEditor = ref<HTMLDivElement>()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -162,6 +171,8 @@ let quillIntro2: any
 let quillIntro3: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillIntro4: any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let quillIntro5: any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let quillPostCitation: any
 
@@ -178,6 +189,7 @@ const contentData = ref({
   intro_2: '',
   intro_3: '',
   intro_4: '',
+  intro_5: '',
   test_post_citation: '',
 })
 
@@ -188,6 +200,7 @@ const originalData = ref({
   intro_2: '',
   intro_3: '',
   intro_4: '',
+  intro_5: '',
   test_post_citation: '',
 })
 
@@ -235,6 +248,12 @@ async function loadContent() {
           quillIntro4.setContents([])
           quillIntro4.clipboard.dangerouslyPasteHTML(item.value)
         }
+      } else if (item.key === 'intro_5') {
+        contentData.value.intro_5 = item.value
+        if (quillIntro5) {
+          quillIntro5.setContents([])
+          quillIntro5.clipboard.dangerouslyPasteHTML(item.value)
+        }
       } else if (item.key === 'test_post_citation') {
         contentData.value.test_post_citation = item.value
         if (quillPostCitation) {
@@ -257,13 +276,14 @@ async function loadContent() {
 async function saveContent() {
   try {
     console.log('saveContent called')
-    const keys: Array<'cgu' | 'welcome' | 'intro_1' | 'intro_2' | 'intro_3' | 'intro_4' | 'test_post_citation'> = [
+    const keys: Array<'cgu' | 'welcome' | 'intro_1' | 'intro_2' | 'intro_3' | 'intro_4' | 'intro_5' | 'test_post_citation'> = [
       'cgu',
       'welcome',
       'intro_1',
       'intro_2',
       'intro_3',
       'intro_4',
+      'intro_5',
       'test_post_citation',
     ]
     const quills = {
@@ -273,6 +293,7 @@ async function saveContent() {
       intro_2: quillIntro2,
       intro_3: quillIntro3,
       intro_4: quillIntro4,
+      intro_5: quillIntro5,
       test_post_citation: quillPostCitation,
     }
 
@@ -339,6 +360,10 @@ function resetContent() {
   if (quillIntro4) {
     quillIntro4.setContents([])
     quillIntro4.clipboard.dangerouslyPasteHTML(originalData.value.intro_4)
+  }
+  if (quillIntro5) {
+    quillIntro5.setContents([])
+    quillIntro5.clipboard.dangerouslyPasteHTML(originalData.value.intro_5)
   }
   if (quillPostCitation) {
     quillPostCitation.setContents([])
@@ -488,6 +513,29 @@ onMounted(() => {
     // Écouter les changements de contenu
     quillIntro4.on('text-change', () => {
       contentData.value.intro_4 = quillIntro4.root.innerHTML
+    })
+  }
+
+  if (intro5Editor.value) {
+    quillIntro5 = new Quill(intro5Editor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        htmlEditButton: {},
+      },
+      placeholder: 'Entrez votre contenu ici...',
+    })
+
+    // Écouter les changements de contenu
+    quillIntro5.on('text-change', () => {
+      contentData.value.intro_5 = quillIntro5.root.innerHTML
     })
   }
 
