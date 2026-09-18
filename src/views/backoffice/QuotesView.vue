@@ -210,9 +210,9 @@ const snackbar = ref({
 })
 
 const headers = [
-  { title: '#', key: 'id', width: '6%', sortable: false },
+  { title: '#', key: 'id', width: '6%' },
   { title: 'Citation', key: 'text', width: '34%', sortable: false },
-  { title: 'Auteur', key: 'author', width: '14%', sortable: false },
+  { title: 'Auteur', key: 'author', width: '14%' },
   { title: 'Wiki', key: 'wiki_link', width: '8%', sortable: false },
   { title: 'Vues', key: 'nb_views', width: '8%' },
   { title: 'Note', key: 'rating', width: '8%' },
